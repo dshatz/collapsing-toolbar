@@ -48,7 +48,7 @@ kotlin {
 
 mavenPublishing {
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
-//    signAllPublications()
+    signAllPublications()
     coordinates(project.group.toString(), "collapsing-toolbar", project.version.toString())
     pom {
         name = "Collapsing Toolbar Compose"
