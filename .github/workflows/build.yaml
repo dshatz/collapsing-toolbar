@@ -77,7 +77,7 @@ jobs:
       - name: Publish to Maven Repository
         run: |
           VERSION=$(echo "${{ steps.get_version.outputs.version }}")
-          ./gradlew :lib:publishAndReleaseToMavenCentral -Pversion=$VERSION
+          ./gradlew :lib:publishAndReleaseToMavenCentral -Pversion=$VERSION -Dorg.gradle.configuration-cache=false
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_PASSWORD }}
