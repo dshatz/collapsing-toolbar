@@ -1,7 +1,8 @@
 # compose-collapsing-toolbar
 A simple implementation of [CollapsingToolbarLayout](https://developer.android.com/reference/com/google/android/material/appbar/CollapsingToolbarLayout) for Jetpack Compose.
 
-This is an adaptation of https://github.com/onebone/compose-collapsing-toolbar.
+This is an adaptation of https://github.com/onebone/compose-collapsing-toolbar. Thank you @onebone!
+
 The changes:
 1. Support for Kotlin Multiplatform. Now only Android and JVM.
 2. When calculating collapsed height, take into account the height of pinned children, if any. This appears to be the behaviour of the original XML implementation.
