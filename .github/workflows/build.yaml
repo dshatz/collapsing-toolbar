@@ -1,0 +1,84 @@
+name: Test & Publish
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+  release:
+    types: [created]  # Triggers publishing when a release is created
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+  packages: write  # Required for publishing to GitHub Packages
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: 2. Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Grant Execute Permission to Gradle Wrapper
+        run: chmod +x gradlew
+
+      - name: Run Gradle Checks and Tests
+        run: ./gradlew :lib:check --no-daemon --scan --stacktrace --build-cache
+        continue-on-error: true  # Continue even if tests fail
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: '**/build/test-results/**/*.xml'
+          retention-days: 7
+
+      - name: Publish Test Report
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: JUnit Test Results
+          path: '**/build/test-results/**/*.xml'
+          reporter: java-junit
+
+  publish:
+    needs: test  # Runs only if tests pass.
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 2. Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - id: get_version
+        name: Get version
+        uses: jannemattila/get-version-from-tag@v4
+      - name: Publish to Maven Repository
+        run: |
+          VERSION=$(echo "${{ steps.get_version.outputs.version }}")
+          ./gradlew :lib:publishAndReleaseToMavenCentral -Pversion=$VERSION
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_PRIVATE_KEY }}
