@@ -11,11 +11,11 @@ The changes:
 You should add `mavenCentral()` repository before installation. Then add the following line to the `dependencies` block in your app level build.gradle:
 
 ```gradle
-implementation "com.dshatz.collapsing-toolbar:1.0.0"
+implementation "com.dshatz.collapsing-toolbar:1.0.1"
 ```
 or build.gradle.kts:
 ```kotlin
-implementation("com.dshatz:collapsing-toolbar:1.0.0")
+implementation("com.dshatz:collapsing-toolbar:1.0.1")
 ```
 
 ## Example
