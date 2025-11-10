@@ -3,7 +3,7 @@
 # https://docs.gradle.org/current/userguide/platforms.html#sub::toml-dependencies-format
 
 [versions]
-kotlin = "1.9.23"
+kotlin = "2.2.21"
 agp = "8.2.2"
 
 [libraries]
@@ -13,7 +13,7 @@ activitycompose = { module = "androidx.activity:activity-compose", version = "1.
 [plugins]
 mp = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 compose-kt = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-compose = { id = "org.jetbrains.compose", version = "1.6.11" }
+compose = { id = "org.jetbrains.compose", version = "1.9.2" }
 android-app = { id = "com.android.application", version.ref = "agp" }
 android-lib = { id = "com.android.library", version.ref = "agp" }
 publish = { id = "com.vanniktech.maven.publish", version = "0.29.0" }

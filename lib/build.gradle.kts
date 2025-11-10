@@ -4,7 +4,7 @@ import org.jetbrains.compose.ExperimentalComposeLibrary
 
 plugins {
     alias(libs.plugins.mp)
-//    alias(libs.plugins.compose.kt)
+    alias(libs.plugins.compose.kt)
     alias(libs.plugins.compose)
     alias(libs.plugins.android.lib)
     alias(libs.plugins.publish)
@@ -29,8 +29,11 @@ android {
 
 kotlin {
     jvmToolchain(21)
-    jvm()
     androidTarget()
+    jvm()
+    iosArm64()
+    iosSimulatorArm64()
+    iosX64()
 
     sourceSets {
         commonMain.dependencies {

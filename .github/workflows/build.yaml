@@ -58,7 +58,7 @@ jobs:
   publish:
     needs: test  # Runs only if tests pass.
     if: github.event_name == 'release'
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       - name: Checkout Repository
