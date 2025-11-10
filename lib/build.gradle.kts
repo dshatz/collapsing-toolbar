@@ -1,6 +1,5 @@
 
 import com.vanniktech.maven.publish.SonatypeHost
-import org.jetbrains.compose.ExperimentalComposeLibrary
 
 plugins {
     alias(libs.plugins.mp)
@@ -20,10 +19,10 @@ repositories {
 
 android {
     namespace = "com.dshatz.collapsingtoolbar"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         minSdk = 21
-        targetSdk = 35
+        lint.targetSdk = 36
     }
 }
 
