@@ -26,8 +26,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
@@ -36,8 +38,10 @@ import androidx.compose.ui.test.assertHeightIsEqualTo
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeDown
 import androidx.compose.ui.test.swipeUp
 import androidx.compose.ui.unit.dp
+import com.dshatz.collapsingtoolbar.CollapsingToolbarScopeInstance.pin
 import kotlin.math.abs
 import org.junit.Rule
 import org.junit.Test
@@ -155,5 +159,115 @@ class CollapsingToolbarTest {
 			.assertHeightIsEqualTo(100.dp)
 
 		assert(abs(state.toolbarState.progress) < 0.01f) // Collapsed
+	}
+
+	@Test
+	fun `exit until collapsed`() {
+		val state = CollapsingToolbarScaffoldState(
+			CollapsingToolbarState()
+		)
+
+		rule.setContent {
+			CollapsingToolbarScaffold(
+                modifier = Modifier
+                    .fillMaxSize(),
+                state = state,
+                scrollStrategy = ScrollStrategy.ExitUntilCollapsed,
+                toolbar = {
+					Box(Modifier.height(60.dp).pin())
+					Box(Modifier.height(300.dp))
+				},
+				toolbarModifier = Modifier.semantics {
+					testTag = "toolbar"
+				}
+            ) {
+				LazyColumn(Modifier.fillMaxSize().semantics {
+					testTag = "contentList"
+				}) {
+					(1..100).forEach {
+						item {
+							Card {
+								Text(it.toString(), modifier = Modifier.padding(15.dp))
+							}
+						}
+					}
+				}
+			}
+		}
+
+		rule.onNode(hasTestTag("toolbar"))
+			.assertHeightIsEqualTo(300.dp)
+
+		rule.onNode(hasTestTag("contentList"))
+			.performTouchInput {
+				swipeUp()
+			}
+
+		rule.onNode(hasTestTag("toolbar")).assertHeightIsEqualTo(60.dp)
+
+		rule.onNode(hasTestTag("contentList"))
+			.performTouchInput {
+				swipeDown(endY = bottom / 2)
+			}
+
+		rule.onNode(hasTestTag("toolbar")).assertHeightIsEqualTo(60.dp)
+		rule.onNode(hasTestTag("contentList"))
+			.performTouchInput {
+				swipeDown()
+			}
+
+		rule.onNode(hasTestTag("toolbar")).assertHeightIsEqualTo(300.dp)
+	}
+
+	@Test
+	fun `enter always`() {
+		val state = CollapsingToolbarScaffoldState(
+			CollapsingToolbarState()
+		)
+
+		rule.setContent {
+			CollapsingToolbarScaffold(
+				modifier = Modifier
+					.fillMaxSize(),
+				state = state,
+				scrollStrategy = ScrollStrategy.EnterAlways,
+				toolbar = {
+					Box(Modifier.height(60.dp).pin())
+					Box(Modifier.height(300.dp))
+				},
+				toolbarModifier = Modifier.semantics {
+					testTag = "toolbar"
+				}
+			) {
+				LazyColumn(Modifier.fillMaxSize().semantics {
+					testTag = "contentList"
+				}) {
+					(1..100).forEach {
+						item {
+							Card {
+								Text(it.toString(), modifier = Modifier.padding(15.dp))
+							}
+						}
+					}
+				}
+			}
+		}
+
+		rule.onNode(hasTestTag("toolbar"))
+			.assertHeightIsEqualTo(300.dp)
+
+		rule.onNode(hasTestTag("contentList"))
+			.performTouchInput {
+				swipeUp()
+			}
+
+		rule.onNode(hasTestTag("toolbar")).assertHeightIsEqualTo(60.dp)
+
+		rule.onNode(hasTestTag("contentList"))
+			.performTouchInput {
+				swipeDown(endY = bottom / 2)
+			}
+
+		rule.onNode(hasTestTag("toolbar")).assertHeightIsEqualTo(300.dp)
 	}
 }

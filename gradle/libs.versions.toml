@@ -8,7 +8,7 @@ agp = "9.2.0"
 
 [libraries]
 activitycompose = { module = "androidx.activity:activity-compose", version = "1.13.0" }
-
+compose-ui = { module = "org.jetbrains.compose.ui:ui", version = "1.11.0-beta02" }
 
 [plugins]
 mp = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
