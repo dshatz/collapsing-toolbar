@@ -11,5 +11,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+        <activity android:name="com.dshatz.collapsingtoolbar.compat.CompatActivity" android:exported="true"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
     </application>
 </manifest>

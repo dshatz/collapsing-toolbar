@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun Root() {
+fun Root(items: Int = 20) {
     MaterialTheme {
         Column {
             CollapsingToolbarWithTitle("Page title", expandedHeight = 130.dp, toolbarContent = { progress ->
@@ -61,12 +61,14 @@ fun Root() {
                     Text("Action")
                 }
             }) {
-                Column(verticalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.verticalScroll(
-                    rememberScrollState()
-                )) {
-                    (1..20).forEach {
-                        Card(Modifier.fillMaxWidth().heightIn(min = 40.dp)) {
-                            Text("Item $it", modifier = Modifier.padding(10.dp))
+                Column(Modifier.fillMaxSize()) {
+                    Column(verticalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.verticalScroll(
+                        rememberScrollState()
+                    )) {
+                        (1..items).forEach {
+                            Card(Modifier.fillMaxWidth().heightIn(min = 40.dp)) {
+                                Text("Item $it", modifier = Modifier.padding(10.dp))
+                            }
                         }
                     }
                 }
