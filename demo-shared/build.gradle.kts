@@ -25,7 +25,7 @@ kotlin {
         commonMain.dependencies {
             implementation(project(":lib"))
             implementation(compose.foundation)
-            implementation(compose.ui)
+            implementation(libs.compose.ui)
             implementation(compose.material3)
         }
         jvmMain.dependencies {
