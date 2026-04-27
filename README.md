@@ -50,9 +50,9 @@ CollapsingToolbarScaffold(
     toolbar = {
         // contents of toolbar go here...
     }
-) {
+) { padding -> // pass PaddingValues to the content
     Column(
-        modifier = Modifier
+        modifier = Modifier.padding(padding)
             .verticalScroll(rememberScrollState()) // main content should be scrollable for CollapsingToolbarScaffold to consume nested scroll
     ) {
         // ...
