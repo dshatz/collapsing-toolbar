@@ -22,6 +22,7 @@ plugins {
 include(":demo-shared")
 include(":androidapp")
 include(":desktopapp")
+include(":webapp")
 include(":lib")
 
 rootProject.name = "collapsing-toolbar"

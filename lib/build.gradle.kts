@@ -27,13 +27,18 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
     iosX64()
+    wasmJs {
+        browser()
+    }
+    js {
+        browser()
+    }
 
     sourceSets {
         commonMain.dependencies {
             implementation(compose.foundation)
             implementation(compose.ui)
             implementation(compose.runtime)
-            implementation("androidx.annotation:annotation:1.9.1")
         }
         jvmTest.dependencies {
             implementation(compose.desktop.uiTestJUnit4)
