@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,12 +29,11 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.lerp
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.lerp
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
-import androidx.compose.ui.unit.sp
 
 
 @Composable
@@ -60,7 +59,10 @@ fun Root() {
 
                     Text("Action")
                 }
-            }) {
+            },
+                expandedTextStyle = MaterialTheme.typography.headlineLarge,
+                collapsedTextStyle = MaterialTheme.typography.bodyLarge
+            ) {
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.verticalScroll(
                     rememberScrollState()
                 )) {
@@ -76,7 +78,14 @@ fun Root() {
 }
 
 @Composable
-fun CollapsingToolbarWithTitle(title: String, expandedHeight: Dp, toolbarContent: @Composable (progress: Float) -> Unit = {}, content: @Composable ColumnScope.() -> Unit) {
+fun CollapsingToolbarWithTitle(
+    title: String,
+    expandedHeight: Dp,
+    toolbarContent: @Composable (progress: Float) -> Unit = {},
+    expandedTextStyle: TextStyle = LocalTextStyle.current,
+    collapsedTextStyle: TextStyle = LocalTextStyle.current,
+    content: @Composable CollapsingToolbarScaffoldScope.() -> Unit
+) {
     val state = rememberCollapsingToolbarScaffoldState()
     Box(Modifier.fillMaxSize()) {
         Image(
@@ -86,7 +95,7 @@ fun CollapsingToolbarWithTitle(title: String, expandedHeight: Dp, toolbarContent
             modifier = Modifier.fillMaxSize()
         )
         CollapsingToolbarScaffold(
-            modifier = Modifier.fillMaxWidth().statusBarsPadding(),
+            modifier = Modifier.fillMaxSize().statusBarsPadding(),
             state = state,
             scrollStrategy = ScrollStrategy.ExitUntilCollapsed,
             toolbar = {
@@ -110,11 +119,7 @@ fun CollapsingToolbarWithTitle(title: String, expandedHeight: Dp, toolbarContent
                     // Title
                     Text(
                         text = title,
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            fontSize = lerp(18.sp, 32.sp, progress),
-                            fontWeight = lerp(FontWeight.Normal, FontWeight.Light, progress)
-                        ),
+                        style = lerp(collapsedTextStyle, expandedTextStyle, progress),
                         modifier = Modifier.padding(start = lerp(0.dp, 15.dp, progress), bottom = lerp(0.dp, 15.dp, progress)).road(
                             whenCollapsed = Alignment.Center,
                             whenExpanded = Alignment.BottomStart
@@ -122,8 +127,8 @@ fun CollapsingToolbarWithTitle(title: String, expandedHeight: Dp, toolbarContent
                     )
                 }
             }) {
-            Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface)) {
-                content()
+            Column(Modifier.fillMaxSize().padding(it).background(MaterialTheme.colorScheme.surface)) {
+                content(this@CollapsingToolbarScaffold)
             }
         }
     }

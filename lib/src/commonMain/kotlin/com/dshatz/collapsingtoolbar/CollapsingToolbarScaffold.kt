@@ -23,6 +23,9 @@
 package com.dshatz.collapsingtoolbar
 
 import androidx.compose.foundation.gestures.ScrollableDefaults
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateOf
@@ -32,15 +35,14 @@ import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.ParentDataModifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntSize
-import kotlin.collections.get
-import kotlin.math.max
-import kotlin.text.get
 
 @Stable
 class CollapsingToolbarScaffoldState(
@@ -90,7 +92,7 @@ fun CollapsingToolbarScaffold(
 	toolbarModifier: Modifier = Modifier,
 	toolbarClipToBounds: Boolean = true,
 	toolbar: @Composable CollapsingToolbarScope.() -> Unit,
-	body: @Composable CollapsingToolbarScaffoldScope.() -> Unit
+	body: @Composable CollapsingToolbarScaffoldScope.(PaddingValues) -> Unit
 ) {
 	val flingBehavior = ScrollableDefaults.flingBehavior()
 	val layoutDirection = LocalLayoutDirection.current
@@ -100,6 +102,9 @@ fun CollapsingToolbarScaffold(
 	}
 
 	val toolbarState = state.toolbarState
+	val toolbarHeightDp = with(LocalDensity.current) {
+		toolbarState.height.toDp()
+	}
 
 	Layout(
 		content = {
@@ -110,8 +115,7 @@ fun CollapsingToolbarScaffold(
 			) {
 				toolbar()
 			}
-
-			CollapsingToolbarScaffoldScopeInstance.body()
+			CollapsingToolbarScaffoldScopeInstance.body(PaddingValues(top = toolbarHeightDp))
 		},
 		modifier = modifier
 			.then(
@@ -133,13 +137,7 @@ fun CollapsingToolbarScaffold(
 		val bodyConstraints = constraints.copy(
 			minWidth = 0,
 			minHeight = 0,
-			maxHeight = when (scrollStrategy) {
-				ScrollStrategy.ExitUntilCollapsed ->
-					(constraints.maxHeight - toolbarState.minHeight).coerceAtLeast(0)
-
-				ScrollStrategy.EnterAlways, ScrollStrategy.EnterAlwaysCollapsed ->
-					constraints.maxHeight
-			}
+			maxHeight = constraints.maxHeight
 		)
 
 		val toolbarPlaceable = measurables[0].measure(toolbarConstraints)
@@ -152,23 +150,16 @@ fun CollapsingToolbarScaffold(
 			it.measure(bodyConstraints)
 		}
 
-		val toolbarHeight = toolbarPlaceable.height
-
-		val width = max(
-			toolbarPlaceable.width,
-			bodyPlaceables.maxOfOrNull { it.width } ?: 0
-		).coerceIn(constraints.minWidth, constraints.maxWidth)
-		val height = max(
-			toolbarHeight,
-			bodyPlaceables.maxOfOrNull { it.height } ?: 0
-		).coerceIn(constraints.minHeight, constraints.maxHeight)
+		val width = constraints.maxWidth
+		val height = constraints.maxHeight
 
 		layout(width, height) {
 			bodyPlaceables.forEachIndexed { index, placeable ->
 				val alignment = childrenAlignments[index]
 
 				if (alignment == null) {
-					placeable.placeRelative(0, toolbarHeight + state.offsetY)
+//					placeable.placeRelative(0, toolbarHeight + state.offsetY)
+					placeable.placeRelative(0, 0)
 				} else {
 					val offset = alignment.align(
 						size = IntSize(placeable.width, placeable.height),
@@ -178,7 +169,7 @@ fun CollapsingToolbarScaffold(
 					placeable.place(offset)
 				}
 			}
-			toolbarPlaceable.placeRelative(0, state.offsetY)
+			toolbarPlaceable.placeRelative(0, 0)
 		}
 	}
 }

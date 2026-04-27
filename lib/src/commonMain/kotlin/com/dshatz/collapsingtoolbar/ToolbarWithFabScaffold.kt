@@ -1,5 +1,6 @@
 package com.dshatz.collapsingtoolbar
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.SubcomposeLayout
@@ -17,7 +18,7 @@ fun ToolbarWithFabScaffold(
 	toolbar: @Composable CollapsingToolbarScope.() -> Unit,
 	fab: @Composable () -> Unit,
 	fabPosition: FabPosition = FabPosition.End,
-	body: @Composable CollapsingToolbarScaffoldScope.() -> Unit
+	body: @Composable CollapsingToolbarScaffoldScope.(PaddingValues) -> Unit
 ) {
 	SubcomposeLayout(
 		modifier = modifier
