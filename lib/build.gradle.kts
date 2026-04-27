@@ -1,6 +1,4 @@
 
-import com.vanniktech.maven.publish.SonatypeHost
-
 plugins {
     alias(libs.plugins.mp)
     alias(libs.plugins.compose.kt)
@@ -17,18 +15,14 @@ repositories {
     mavenCentral()
 }
 
-android {
-    namespace = "com.dshatz.collapsingtoolbar"
-    compileSdk = 36
-    defaultConfig {
-        minSdk = 21
-        lint.targetSdk = 36
-    }
-}
-
 kotlin {
     jvmToolchain(21)
-    androidTarget()
+    androidLibrary {
+        namespace = "com.dshatz.collapsingtoolbar"
+        compileSdk = 36
+        minSdk = 23
+        lint.targetSdk = 36
+    }
     jvm()
     iosArm64()
     iosSimulatorArm64()
@@ -49,7 +43,7 @@ kotlin {
 }
 
 mavenPublishing {
-    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    publishToMavenCentral(automaticRelease = true)
     signAllPublications()
     coordinates(project.group.toString(), "collapsing-toolbar", project.version.toString())
     pom {

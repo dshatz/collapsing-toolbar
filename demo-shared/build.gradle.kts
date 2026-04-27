@@ -1,28 +1,20 @@
+
 plugins {
     alias(libs.plugins.mp)
     alias(libs.plugins.compose.kt)
     alias(libs.plugins.compose)
-    alias(libs.plugins.android.app)
-}
-
-repositories {
-    google()
-    mavenCentral()
-}
-
-android {
-    namespace = "com.dshatz.collapsingtoolbar.sample"
-    compileSdk = 36
-    defaultConfig {
-        minSdk = 21
-        lint.targetSdk = 35
-    }
+    alias(libs.plugins.android.lib)
 }
 
 kotlin {
     jvmToolchain(21)
     jvm()
-    androidTarget()
+    android {
+        namespace = "com.dshatz.collapsingtoolbar.sample"
+        compileSdk = 36
+        minSdk = 23
+    }
+
     sourceSets {
         commonMain.dependencies {
             implementation(project(":lib"))
@@ -33,10 +25,6 @@ kotlin {
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
-        }
-        androidMain.dependencies {
-            implementation(libs.activitycompose)
-            implementation("androidx.appcompat:appcompat:1.7.1")
         }
     }
 }
