@@ -14,6 +14,12 @@ kotlin {
         compileSdk = 36
         minSdk = 23
     }
+    js {
+        browser()
+    }
+    wasmJs {
+        browser()
+    }
 
     sourceSets {
         commonMain.dependencies {
@@ -21,7 +27,6 @@ kotlin {
             implementation(compose.foundation)
             implementation(libs.compose.ui)
             implementation(compose.material3)
-            implementation(compose.desktop.common)
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
